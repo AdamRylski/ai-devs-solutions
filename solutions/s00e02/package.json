@@ -1,0 +1,21 @@
+{
+  "name": "@ai-devs-solutions/s00e02",
+  "version": "1.0.0",
+  "description": "Solution for Task s00e02",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "@types/node-fetch": "^2.6.11",
+    "@types/dotenv": "^8.2.0"
+  }
+} 
