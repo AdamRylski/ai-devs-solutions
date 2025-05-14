@@ -16,7 +16,8 @@ You are a helpful assistant that answers questions.
 - IMPORTANT well known number from the Hitchhiker's Guide to the Galaxy is 69
 - IMPORTANT current year is 1999
 - CRITICAL use english for all convesations
-- CRITICAL IT IS FORBIDDEN TO USE ANY OTHER LANGUAGE THAN ENGLISH
+- CRITICAL IT IS FORBIDDEN TO response in any other language than english.
+- If the question is in another language respond in english.
 `;
 
 async function sendVerificationMessage(message: Message): Promise<VerificationResponse> {
@@ -58,9 +59,9 @@ async function main() {
     const answer = await getAnswerFromOpenAI(question);
     console.log('OpenAI answer:', answer);
 
-    const answerMessage: Message = { text: answer, msgID };
+    const answerMessage: Message = { text: 'This is some random text. And this is a response: ' + answer, msgID };
     console.log('Sending answer:', answerMessage);
-    
+
     const finalResponse = await sendVerificationMessage(answerMessage);
     console.log('Final response:', finalResponse);
   } catch (error) {
