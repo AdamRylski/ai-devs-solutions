@@ -4,7 +4,7 @@ import type { ChatCompletion } from "openai/resources/chat/completions";
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { LlmTextProcessingService } from './types.js';
+import { LlmTextProcessingService } from '../types.js';
 
 // Load environment variables from the project root
 const __dirname = fileURLToPath(new URL('.', import.meta.url));

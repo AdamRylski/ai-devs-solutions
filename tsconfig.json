@@ -13,6 +13,10 @@
     "sourceMap": true,
     "resolveJsonModule": true
   },
+  "include": [
+    "solutions/**/*",
+    "common/**/*"
+  ],
   "exclude": [
     "node_modules",
     "dist",
