@@ -3,13 +3,13 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
-import { OpenAIService } from '../../../common/dist/openai/OpenAIService.js';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
 
 export class S01E05Downloader {
     private readonly apiKey: string;
     private readonly baseUrl: string = 'https://c3ntrala.ag3nts.org/data';
     private readonly reportUrl: string = 'https://c3ntrala.ag3nts.org/report';
-    private readonly openai: OpenAIService;
+    private readonly llmService: LlmTextProcessingService;
     private readonly censorPrompt = `
 You are a data censoring assistant. Your task is to censor personal information in the text.
 Replace all personal data (names, addresses, ages, etc.) with the word "CENZURA".
@@ -38,12 +38,12 @@ AI: "Osoba podejrzana to CENZURA. Adres: CENZURA, ul. CENZURA. Wiek: CENZURA lat
             throw new Error('AI_DEVS_API_KEY not found in environment variables');
         }
         this.apiKey = apiKey;
-        this.openai = new OpenAIService();
+        this.llmService = new OpenAITextProcessingService();
     }
 
     private async censorData(text: string): Promise<string> {
         try {
-            const response = await this.openai.completion([
+            const response = await this.llmService.completion([
                 { role: "system", content: this.censorPrompt },
                 { role: "user", content: text }
             ]);

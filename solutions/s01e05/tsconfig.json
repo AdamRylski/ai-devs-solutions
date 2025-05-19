@@ -6,8 +6,7 @@
     "moduleResolution": "NodeNext",
     "baseUrl": "../..",
     "paths": {
-      "common": ["common/dist/openai/OpenAIService"],
-      "common/*": ["common/dist/openai/*"]
+      "common": ["common/dist/openai/OpenAITextProcessingService"]
     }
   },
   "include": ["src/**/*"]

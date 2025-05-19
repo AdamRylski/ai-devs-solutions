@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import fetch from 'node-fetch';
 import { Task, Message, VerificationResponse } from './types.js';
-import { OpenAIService } from '../../../common/dist/openai/OpenAIService.js';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions.js";
 
 const VERIFICATION_URL = 'https://xyz.ag3nts.org/verify';
@@ -35,13 +35,13 @@ async function sendVerificationMessage(message: Message): Promise<VerificationRe
 }
 
 async function getAnswerFromOpenAI(question: string): Promise<string> {
-  const openai = new OpenAIService();
+  const llmService: LlmTextProcessingService = new OpenAITextProcessingService();
   const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: SYSTEM_PROMPT },
     { role: "user", content: question }
   ];
 
-  const completion = await openai.completion(messages);
+  const completion = await llmService.completion(messages);
   return completion.choices[0].message.content || '';
 }
 

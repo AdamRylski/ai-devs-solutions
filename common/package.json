@@ -2,8 +2,8 @@
   "name": "common",
   "version": "1.0.0",
   "type": "module",
-  "main": "./dist/openai/OpenAIService.js",
-  "types": "./dist/openai/OpenAIService.d.ts",
+  "main": "./dist/openai/index.js",
+  "types": "./dist/openai/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"

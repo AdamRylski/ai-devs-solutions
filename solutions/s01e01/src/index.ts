@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { OpenAIService } from 'common';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 /**
@@ -82,13 +82,13 @@ async function main() {
         const question = extractQuestion(html);
         console.log('Captcha question:', question);
 
-        const openai = new OpenAIService();
+        const llmService: LlmTextProcessingService = new OpenAITextProcessingService();
         const messages: ChatCompletionMessageParam[] = [
             { role: 'system', content: 'You are a helpful assistant that answers questions in Polish. Provide one word answer only.' },
             { role: 'user', content: question }
         ];
         
-        const response = await openai.completion(messages);
+        const response = await llmService.completion(messages);
         const answer = response.choices[0].message.content;
         if (!answer) {
             throw new Error('No answer received from OpenAI');

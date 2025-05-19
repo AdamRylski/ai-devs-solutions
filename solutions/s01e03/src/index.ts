@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { OpenAIService } from '../../../common/dist/openai/OpenAIService.js';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions.js";
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
@@ -89,11 +89,11 @@ interface TestQuestionProcessor {
 }
 
 class TestDataProcessor implements TestQuestionProcessor {
-    private openai: OpenAIService;
+    private llmService: LlmTextProcessingService;
     private originalData: TestData;
 
     constructor(originalData: TestData) {
-        this.openai = new OpenAIService();
+        this.llmService = new OpenAITextProcessingService();
         this.originalData = originalData;
     }
 
@@ -110,7 +110,7 @@ class TestDataProcessor implements TestQuestionProcessor {
 
         if (question.test) {
             try {
-                const response = await this.openai.completion([
+                const response = await this.llmService.completion([
                     { role: "system", content: SYSTEM_PROMPT },
                     { role: "user", content: question.test.q }
                 ]);
