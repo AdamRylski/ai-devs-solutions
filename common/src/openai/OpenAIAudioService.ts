@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { AudioProcessingService } from "./types.js";
+import { AudioProcessingService } from "../types.js";
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
