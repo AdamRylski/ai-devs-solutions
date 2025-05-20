@@ -25,4 +25,30 @@ export interface AudioProcessingService {
     audioData: Buffer,
     fileName: string
   ): Promise<string>;
+}
+
+export interface VisionProcessingService {
+  /**
+   * Analyze an image using OpenAI's vision models
+   * @param imageBase64 Base64 encoded image data
+   * @param prompt The prompt to analyze the image with
+   * @param options Optional parameters for the vision analysis
+   * @returns Promise resolving to a chat completion containing the analysis
+   */
+  /**
+   * Analyze one or more images using OpenAI's vision models
+   * @param imageBase64s Array of base64 encoded image data
+   * @param prompt The prompt to analyze the images with
+   * @param options Optional parameters for the vision analysis
+   * @returns Promise resolving to a chat completion containing the analysis
+   */
+  analyzeImage(
+    imageBase64s: string[],
+    prompt: string,
+    options?: {
+      model?: string;
+      maxTokens?: number;
+      temperature?: number;
+    }
+  ): Promise<ChatCompletion>;
 } 
