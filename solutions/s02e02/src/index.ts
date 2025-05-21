@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
-import { OpenAIVisionService } from '../../../common/src/openai/OpenAIVisionService.js';
+import { OpenAIPictureAnalysisService } from '../../common/src/openai/OpenAIPictureAnalysisService.js';
 
 
 // Initialize dotenv
@@ -58,7 +58,7 @@ async function main() {
         images.forEach(img => {
             console.log(`- ${img.filename} (${img.base64.substring(0, 50)}...)`);
         });
-        const visionService = new OpenAIVisionService();
+        const visionService = new OpenAIPictureAnalysisService();
         // Debug: print env variable
         console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY);
         const allBase64s = images.map(img => img.base64);

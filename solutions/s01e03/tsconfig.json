@@ -1,13 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "moduleResolution": "NodeNext",
-    "baseUrl": "../..",
-    "paths": {
-      "common": ["common/dist/openai/OpenAITextProcessingService"]
-    }
+    "outDir": "./dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "paths": {
+    "common": ["common/src/openai/OpenAITextProcessingService"]
+  }
 } 

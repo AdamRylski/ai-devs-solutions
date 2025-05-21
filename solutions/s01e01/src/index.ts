@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../common/src/openai/index.js';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 /**

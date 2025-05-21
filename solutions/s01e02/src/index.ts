@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import fetch from 'node-fetch';
 import { Task, Message, VerificationResponse } from './types.js';
-import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../common/src/openai/index.js';
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions.js";
 
 const VERIFICATION_URL = 'https://xyz.ag3nts.org/verify';

@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { OpenAIAudioService, OpenAITextProcessingService, LlmTextProcessingService } from '../../../common/dist/openai/index.js';
+import { OpenAIAudioService, OpenAITextProcessingService, LlmTextProcessingService } from '../../common/src/openai/index.js';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { config } from 'dotenv';
 

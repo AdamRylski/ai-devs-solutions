@@ -3,7 +3,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
-import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../common/src/openai/index.js';
 
 export class S01E05Downloader {
     private readonly apiKey: string;

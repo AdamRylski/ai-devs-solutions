@@ -1,4 +1,4 @@
-import { sendAnswer, downloadData } from '../../../common/src/poligon-api-integration.js';
+import { sendAnswer, downloadData } from '../../common/src/poligon-api-integration.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';

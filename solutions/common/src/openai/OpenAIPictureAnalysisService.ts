@@ -4,15 +4,15 @@ import type { ChatCompletion } from "openai/resources/chat/completions";
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { VisionProcessingService } from '../types.js';
+import { PictureAnalysisService } from '../types.js';
 
 // Load environment variables from the project root
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 config({ path: resolve(__dirname, '../../../.env') });
 
-export type VisionAnalysisOptions = Parameters<VisionProcessingService['analyzeImage']>[2];
+export type VisionAnalysisOptions = Parameters<PictureAnalysisService['analyzeImage']>[2];
 
-export class OpenAIVisionService implements VisionProcessingService {
+export class OpenAIPictureAnalysisService implements PictureAnalysisService {
   private openai: OpenAI;
 
   constructor() {

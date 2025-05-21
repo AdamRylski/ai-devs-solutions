@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { LlmTextProcessingService, OpenAITextProcessingService } from '../../../common/dist/openai/index.js';
-import type { ChatCompletionMessageParam } from "openai/resources/chat/completions.js";
+import { LlmTextProcessingService, OpenAITextProcessingService } from '../../common/src/openai/index.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
 

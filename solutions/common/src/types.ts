@@ -27,14 +27,7 @@ export interface AudioProcessingService {
   ): Promise<string>;
 }
 
-export interface VisionProcessingService {
-  /**
-   * Analyze an image using OpenAI's vision models
-   * @param imageBase64 Base64 encoded image data
-   * @param prompt The prompt to analyze the image with
-   * @param options Optional parameters for the vision analysis
-   * @returns Promise resolving to a chat completion containing the analysis
-   */
+export interface PictureAnalysisService {
   /**
    * Analyze one or more images using OpenAI's vision models
    * @param imageBase64s Array of base64 encoded image data
@@ -51,4 +44,20 @@ export interface VisionProcessingService {
       temperature?: number;
     }
   ): Promise<ChatCompletion>;
+} 
+
+export interface PictureGenerationService {
+  /**
+   * Generate image based on the prompt
+   * @param prompt The prompt to generate the image with
+   * @param options Optional parameters for the image generation
+   * @returns Promise resolving to a url of the generated image
+   */
+  pictureParameters(
+    prompt: string,
+    options?: {
+      size?: string;
+      response_format?: string;
+    }
+  ): Promise<string>;
 } 
