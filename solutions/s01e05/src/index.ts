@@ -30,7 +30,7 @@ AI: "Osoba podejrzana to CENZURA. Adres: CENZURA, ul. CENZURA. Wiek: CENZURA lat
 
     constructor() {
         // Load environment variables from the global .env file
-        const globalEnvPath = path.resolve(process.env.HOME || process.env.USERPROFILE || '', 'ai_devs/ai-devs-solutions/.env');
+        const globalEnvPath = path.resolve(process.env.OPENAI_API_KEY || process.env.HOME || process.env.USERPROFILE || '', 'ai_devs/ai-devs-solutions/.env');
         config({ path: globalEnvPath });
 
         const apiKey = process.env.AI_DEVS_API_KEY;
@@ -38,7 +38,10 @@ AI: "Osoba podejrzana to CENZURA. Adres: CENZURA, ul. CENZURA. Wiek: CENZURA lat
             throw new Error('AI_DEVS_API_KEY not found in environment variables');
         }
         this.apiKey = apiKey;
-        this.llmService = new OpenAITextProcessingService();
+        if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OPENAI_API_KEY is not set');
+        }
+        this.llmService = new OpenAITextProcessingService(process.env.OPENAI_API_KEY);
     }
 
     private async censorData(text: string): Promise<string> {

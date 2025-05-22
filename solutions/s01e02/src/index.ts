@@ -1,8 +1,12 @@
-import 'dotenv/config';
+import * as path from 'path';
+import { config } from 'dotenv';
 import fetch from 'node-fetch';
 import { Task, Message, VerificationResponse } from './types.js';
 import { LlmTextProcessingService, OpenAITextProcessingService } from '../../common/src/openai/index.js';
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions.js";
+
+const globalEnvPath = path.resolve(process.env.OPENAI_API_KEY || process.env.HOME || process.env.USERPROFILE || '', 'ai_devs/ai-devs-solutions/.env');
+config({ path: globalEnvPath });
 
 const VERIFICATION_URL = 'https://xyz.ag3nts.org/verify';
 
@@ -35,7 +39,11 @@ async function sendVerificationMessage(message: Message): Promise<VerificationRe
 }
 
 async function getAnswerFromOpenAI(question: string): Promise<string> {
-  const llmService: LlmTextProcessingService = new OpenAITextProcessingService();
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not set');
+  }
+
+  const llmService: LlmTextProcessingService = new OpenAITextProcessingService(process.env.OPENAI_API_KEY);
   const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: SYSTEM_PROMPT },
     { role: "user", content: question }

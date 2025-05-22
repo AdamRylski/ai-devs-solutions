@@ -1,18 +1,11 @@
 import OpenAI from "openai";
 import { AudioProcessingService } from "../types.js";
-import { config } from 'dotenv';
-import { resolve } from 'path';
-import { fileURLToPath } from 'url';
-
-// Load environment variables from the project root
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-config({ path: resolve(__dirname, '../../../.env') });
 
 export class OpenAIAudioService implements AudioProcessingService {
   private openai: OpenAI;
 
-  constructor() {
-    this.openai = new OpenAI();
+  constructor(apiKey: string) {
+    this.openai = new OpenAI({ apiKey });
   }
 
   async transcribeAudio(audioData: Buffer, fileName: string): Promise<string> {

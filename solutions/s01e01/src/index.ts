@@ -1,6 +1,10 @@
+import * as path from 'path';
+import { config } from 'dotenv';
 import fetch from 'node-fetch';
 import { LlmTextProcessingService, OpenAITextProcessingService } from '../../common/src/openai/index.js';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+
+
 
 /**
  * Extracts the question from the HTML response
@@ -74,7 +78,16 @@ async function sendAnswer(url: string, answer: string): Promise<string> {
     }
 }
 
+// Load environment variables from the global .env file
+const globalEnvPath = path.resolve(process.env.OPENAI_API_KEY || process.env.HOME || process.env.USERPROFILE || '', 'ai_devs/ai-devs-solutions/.env');
+config({ path: globalEnvPath });
+
 async function main() {
+
+    if (!process.env.OPENAI_API_KEY) {
+        throw new Error('OPENAI_API_KEY is not set');
+    }
+
     try {
         const url = 'https://xyz.ag3nts.org/';
         console.log('Making GET request to:', url);
@@ -82,7 +95,7 @@ async function main() {
         const question = extractQuestion(html);
         console.log('Captcha question:', question);
 
-        const llmService: LlmTextProcessingService = new OpenAITextProcessingService();
+        const llmService: LlmTextProcessingService = new OpenAITextProcessingService(process.env.OPENAI_API_KEY);
         const messages: ChatCompletionMessageParam[] = [
             { role: 'system', content: 'You are a helpful assistant that answers questions in Polish. Provide one word answer only.' },
             { role: 'user', content: question }

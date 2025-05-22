@@ -5,6 +5,9 @@ import { OpenAIAudioService, OpenAITextProcessingService, LlmTextProcessingServi
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { config } from 'dotenv';
 
+const globalEnvPath = path.resolve(process.env.OPENAI_API_KEY || '', 'ai_devs/ai-devs-solutions/.env');
+config({ path: globalEnvPath });
+
 // Load environment variables
 config();
 
@@ -136,8 +139,12 @@ async function processAudioFiles() {
         }
 
         console.log('Processing audio files in data directory:');
-        const audioService = new OpenAIAudioService();
-        const llmService = new OpenAITextProcessingService();
+
+        if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OPENAI_API_KEY is not set');
+        }
+        const audioService = new OpenAIAudioService(process.env.OPENAI_API_KEY);
+        const llmService = new OpenAITextProcessingService(process.env.OPENAI_API_KEY);
 
         // First phase: Transcribe all files
         for (const file of files) {

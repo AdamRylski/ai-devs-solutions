@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 import fetch from 'node-fetch';
 
 // Load environment variables from the global .env file
-const globalEnvPath = path.resolve(process.env.HOME || process.env.USERPROFILE || '', 'ai_devs/ai-devs-solutions/.env');
+const globalEnvPath = path.resolve(process.env.OPENAI_API_KEY || process.env.HOME || process.env.USERPROFILE || '', 'ai_devs/ai-devs-solutions/.env');
 config({ path: globalEnvPath });
 
 // Get the directory name in ES modules
@@ -92,7 +92,12 @@ class TestDataProcessor implements TestQuestionProcessor {
     private originalData: TestData;
 
     constructor(originalData: TestData) {
-        this.llmService = new OpenAITextProcessingService();
+
+        if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OPENAI_API_KEY is not set');
+        }
+
+        this.llmService = new OpenAITextProcessingService(process.env.OPENAI_API_KEY);
         this.originalData = originalData;
     }
 

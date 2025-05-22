@@ -58,9 +58,11 @@ async function main() {
         images.forEach(img => {
             console.log(`- ${img.filename} (${img.base64.substring(0, 50)}...)`);
         });
-        const visionService = new OpenAIPictureAnalysisService();
-        // Debug: print env variable
-        console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY);
+        if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OPENAI_API_KEY is not set');
+        }
+        const visionService = new OpenAIPictureAnalysisService(process.env.OPENAI_API_KEY);
+
         const allBase64s = images.map(img => img.base64);
         const result = await visionService.analyzeImage(allBase64s, SYSTEM_PROMPT, {
             model: "gpt-4o"

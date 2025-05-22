@@ -39,3 +39,5 @@ solutions/*/node_modules/
 solutions/*/*/node_modules/
 
 **.js
+solutions/data/**
+.vscode/**

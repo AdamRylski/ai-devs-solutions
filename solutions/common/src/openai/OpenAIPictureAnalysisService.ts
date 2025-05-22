@@ -6,17 +6,14 @@ import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { PictureAnalysisService } from '../types.js';
 
-// Load environment variables from the project root
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-config({ path: resolve(__dirname, '../../../.env') });
 
 export type VisionAnalysisOptions = Parameters<PictureAnalysisService['analyzeImage']>[2];
 
 export class OpenAIPictureAnalysisService implements PictureAnalysisService {
   private openai: OpenAI;
 
-  constructor() {
-    this.openai = new OpenAI();
+  constructor(apiKey: string) {
+    this.openai = new OpenAI({ apiKey });
   }
 
   /**
