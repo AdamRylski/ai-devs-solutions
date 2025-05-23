@@ -25,7 +25,7 @@ async function main() {
     const centralaApi = new CentralaApi(process.env.AI_DEVS_API_KEY);
 
     try {
-        const centralaResponse = await centralaApi.downloadTaskInput("robotid.json");
+        const centralaResponse = await centralaApi.downloadTaskInputWithApiKey("robotid.json");
         const taskResponse: TaskResponse = JSON.parse(centralaResponse);
         console.log('Task response:', taskResponse);
 

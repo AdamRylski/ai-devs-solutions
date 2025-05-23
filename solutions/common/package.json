@@ -1,18 +1,25 @@
 {
-  "name": "common",
+  "name": "web-scraper",
   "version": "1.0.0",
   "type": "module",
-  "main": "./dist/openai/index.js",
-  "types": "./dist/openai/index.d.ts",
+  "description": "Web scraper with OpenAI integration for content analysis",
+  "main": "dist/scrapper/scrapper.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsx watch src/scrapper/scrapper.ts",
+    "start": "node dist/scrapper/scrapper.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "openai": "^4.28.0"
+    "axios": "^1.6.7",
+    "cheerio": "^1.0.0-rc.12",
+    "openai": "^4.28.0",
+    "turndown": "^7.1.2"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/cheerio": "^0.22.35",
+    "@types/turndown": "^5.0.4",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
 } 

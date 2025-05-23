@@ -22,9 +22,31 @@ export class CentralaApi {
         this.baseUrl = "https://centrala.ag3nts.org/";
     }
 
+    async downloadTaskInputWithoutApiKey(url: string): Promise<string> {
+        try {
+            const response = await this.downloadTaskInput(this.baseUrl + "/data/" + url)
+    
+            return response;
+        } catch (error) {
+            console.error('Error making GET request:', error);
+            throw error;
+        }
+    }
+
+    async downloadTaskInputWithApiKey(url: string): Promise<string> {
+        try {
+            const response = await this.downloadTaskInput(this.baseUrl + "/data/" + this.apiKey + "/" + url)
+    
+            return response;
+        } catch (error) {
+            console.error('Error making GET request:', error);
+            throw error;
+        }
+    }
+
     async downloadTaskInput(url: string): Promise<string> {
         try {
-            const response = await fetch(this.baseUrl + "/data/" + this.apiKey + "/" + url, {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'text/html'

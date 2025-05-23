@@ -41,3 +41,4 @@ solutions/*/*/node_modules/
 **.js
 solutions/data/**
 .vscode/**
+solutions/s02e05/data/**
