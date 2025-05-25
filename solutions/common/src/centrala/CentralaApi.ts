@@ -66,10 +66,19 @@ export class CentralaApi {
 
     async sendAnswer(task: string, answer: string): Promise<string> {
         try {
+            // Try to parse the answer if it's a JSON string
+            let parsedAnswer = answer;
+            try {
+                parsedAnswer = JSON.parse(answer);
+            } catch {
+                // If parsing fails, use the original string
+                parsedAnswer = answer;
+            }
+
             const reportMsg = new TaskResponse(
                 task,
                 this.apiKey,
-                answer);
+                parsedAnswer);
 
             console.log("Sending msg:" + JSON.stringify(reportMsg));
     
