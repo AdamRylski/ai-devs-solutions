@@ -45,7 +45,7 @@ export class WebScraper {
   async scrape(url: string, outputPath: string): Promise<void> {
     try {
       this.baseUrl = url;
-      const response = await axios.get(url);
+      const response = await axios.get<string>(url);
       const $ = cheerio.load(response.data);
 
       // Initialize the content structure
@@ -112,7 +112,9 @@ export class WebScraper {
         if (audioUrl) {
           try {
             const absoluteUrl = this.resolveUrl(audioUrl);
-            const audioResponse = await axios.get(absoluteUrl, { responseType: 'arraybuffer' });
+            const audioResponse = await axios.get<ArrayBuffer>(absoluteUrl, { 
+              responseType: 'arraybuffer'
+            });
             const audioBuffer = Buffer.from(audioResponse.data);
             
             const fileName = path.basename(audioUrl);

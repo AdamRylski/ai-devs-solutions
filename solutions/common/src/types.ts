@@ -61,3 +61,27 @@ export interface PictureGenerationService {
     }
   ): Promise<string>;
 } 
+
+export interface TokenizerService {
+  /**
+   * Process text messages using an LLM model and return a completion
+   * @param messages Array of chat messages to process
+   * @param model Optional model identifier to use for processing
+   * @returns Promise resolving to a chat completion
+   */
+  tokenize(inputText: String, filename: String, model: string): Promise<TokenizedRecord>;
+}
+
+export interface TokenizedRecord {
+  fileName: string;
+  titleInfo?: string; // np. z nazwy pliku
+  content: string;
+  tokens: string[];
+  namedEntities: {
+    persons: string[];
+    places: string[];
+    objects: string[];
+    animals: string[];
+  };
+  relatedFacts: string[]; // uzupełniane później
+}
