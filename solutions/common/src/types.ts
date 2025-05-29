@@ -83,5 +83,5 @@ export interface TokenizedRecord {
     objects: string[];
     animals: string[];
   };
-  relatedFacts: string[]; // uzupełniane później
+  relatedFacts: string; // uzupełniane później
 }

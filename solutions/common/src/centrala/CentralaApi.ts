@@ -96,9 +96,13 @@ export class CentralaApi {
             console.log(responseText);
             return responseText;
 
-        } catch (error) {
-            console.error('Error sending answer:', error);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error('Error sending answer:', error.message);
+            } else {
+                console.error('Error sending answer:', error);
+            }
             throw error;
         }
     }
-} 
+}

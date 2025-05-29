@@ -14,7 +14,7 @@ export interface TokenizedRecord {
       objects: string[];
       animals: string[];
     };
-    relatedFacts: string[]; // uzupełniane później
+    relatedFacts: string; // uzupełniane później
   }
 
 const prompt = `
@@ -83,7 +83,7 @@ export class OpenAITokenizer implements TokenizerService {
           objects: namedEntities.objects || [],
           animals: namedEntities.animals || []
         },
-        relatedFacts: []
+        relatedFacts: ''
       };
     } catch (error) {
       console.error('Error calling OpenAI:', error);
