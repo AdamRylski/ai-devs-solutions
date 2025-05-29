@@ -85,3 +85,14 @@ export interface TokenizedRecord {
   };
   relatedFacts: string; // uzupełniane później
 }
+
+
+export interface EmbedderService {
+  /**
+   * Generate embedding for a text
+   * @param text Text to generate embedding for
+   * @returns Promise resolving to an array of numbers
+   */
+  generateEmbedding(text: String): Promise<number[]>;
+}
+

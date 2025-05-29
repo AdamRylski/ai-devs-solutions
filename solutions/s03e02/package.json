@@ -1,0 +1,26 @@
+{
+  "name": "s03e02-solution",
+  "version": "1.0.0",
+  "description": "Solution for Season 3, Episode 2 - Semantic search and vector databases",
+  "type": "module",
+  "main": "dist/semanticSearch.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/semanticSearch.js",
+    "dev": "node --loader ts-node/esm src/semanticSearch.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.14.1",
+    "common": "file:../../common",
+    "dotenv": "^16.4.5",
+    "glob": "^11.0.2",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.103.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
