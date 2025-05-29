@@ -173,8 +173,8 @@ async function processReportWithFacts(report: TokenizedRecord, processedFacts: T
     const completion = await llmService.completion(messages);
     
     console.log("--------------------------------");
-    console.log(completion.choices[0].message.content);
-    const content = completion.choices[0].message.content;
+    console.log(completion);
+    const content = completion;
     if (!content) {
       throw new Error('No content received from OpenAI');
     }

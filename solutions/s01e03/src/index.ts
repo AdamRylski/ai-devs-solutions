@@ -118,7 +118,7 @@ class TestDataProcessor implements TestQuestionProcessor {
                     { role: "system", content: SYSTEM_PROMPT },
                     { role: "user", content: question.test.q }
                 ]);
-                const answer = response.choices[0]?.message?.content;
+                const answer = response;
                 if (answer) {
                     console.log(`\nAdditional question: ${question.test.q}`);
                     console.log(`AI answer: ${answer}`);

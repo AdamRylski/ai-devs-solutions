@@ -46,12 +46,11 @@ AI: "Osoba podejrzana to CENZURA. Adres: CENZURA, ul. CENZURA. Wiek: CENZURA lat
 
     private async censorData(text: string): Promise<string> {
         try {
-            const response = await this.llmService.completion([
+            const censoredText = await this.llmService.completion([
                 { role: "system", content: this.censorPrompt },
                 { role: "user", content: text }
             ]);
 
-            const censoredText = response.choices[0]?.message?.content;
             if (!censoredText) {
                 throw new Error('No response from OpenAI');
             }

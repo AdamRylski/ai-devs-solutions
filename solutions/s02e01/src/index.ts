@@ -68,7 +68,7 @@ async function analyzeAllTranscriptions(transcriptions: TranscriptionData[], llm
 
     try {
         const completion = await llmService.completion(messages);
-        const analysis = completion.choices[0]?.message?.content;
+        const analysis = completion;
         
         if (!analysis) {
             throw new Error('No analysis received from LLM');

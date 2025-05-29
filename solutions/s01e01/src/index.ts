@@ -101,8 +101,7 @@ async function main() {
             { role: 'user', content: question }
         ];
         
-        const response = await llmService.completion(messages);
-        const answer = response.choices[0].message.content;
+        const answer = await llmService.completion(messages);
         if (!answer) {
             throw new Error('No answer received from OpenAI');
         }

@@ -72,7 +72,7 @@ Odpowiedzi MUSI być w formacie JSON:
 
     try {
         const response = await llmService.completion(messages, "gpt-4.1");
-        const content = response.choices[0].message.content || "{}";
+        const content = response || "{}";
         
         try {
             return JSON.parse(content);

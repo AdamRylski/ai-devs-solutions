@@ -49,8 +49,8 @@ async function getAnswerFromOpenAI(question: string): Promise<string> {
     { role: "user", content: question }
   ];
 
-  const completion = await llmService.completion(messages);
-  return completion.choices[0].message.content || '';
+  const answer = await llmService.completion(messages);
+  return answer;
 }
 
 async function main() {

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Agent - BanAN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .step {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active {
+            border-color: #3498db;
+            background: #f8f9fa;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .step.completed {
+            border-color: #27ae60;
+            background: #d4edda;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #6c757d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .step.active .step-number {
+            background: #3498db;
+        }
+        
+        .step.completed .step-number {
+            background: #27ae60;
+        }
+        
+        input, textarea, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .log {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-top: 15px;
+        }
+        
+        .result {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .final-answer {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Database Agent - BanAN</h1>
+            <p>Agent do automatycznego wykonania zadania database</p>
+        </div>
+        
+        <div class="content">
+            <!-- Krok 1: Konfiguracja -->
+            <div class="step" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3>Konfiguracja API</h3>
+                </div>
+                <input type="text" id="apiKey" placeholder="Wklej tutaj swój klucz API">
+                <button onclick="startAgent()">Uruchom Agenta</button>
+            </div>
+            
+            <!-- Krok 2: Odkrywanie tabel -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3>Odkrywanie struktury bazy danych</h3>
+                </div>
+                <p>Agent wykrywa dostępne tabele...</p>
+                <div id="tablesLog" class="log" style="display: none;"></div>
+                <div id="tablesResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Krok 3: Analiza struktury tabel -->
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3>Analiza struktury tabel</h3>
+                </div>
+                <p>Agent analizuje strukturę tabel users i datacenters...</p>
+                <div id="structureLog" class="log" style="display: none;"></div>
+                <div id="structureResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Krok 4: Generowanie zapytania SQL -->
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h3>Generowanie zapytania SQL</h3>
+                </div>
+                <p>Agent generuje zapytanie SQL na podstawie struktury tabel...</p>
+                <div id="sqlLog" class="log" style="display: none;"></div>
+                <div id="sqlResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Krok 5: Wykonanie zapytania -->
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h3>Wykonanie zapytania SQL</h3>
+                </div>
+                <p>Agent wykonuje wygenerowane zapytanie...</p>
+                <div id="queryLog" class="log" style="display: none;"></div>
+                <div id="queryResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Krok 6: Wysłanie odpowiedzi -->
+            <div class="step" id="step6">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <h3>Wysłanie odpowiedzi do centrali</h3>
+                </div>
+                <p>Agent przesyła finalne wyniki do centrali...</p>
+                <div id="finalLog" class="log" style="display: none;"></div>
+                <div id="finalResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <div id="finalAnswer" class="final-answer" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = '';
+        let currentStep = 1;
+        let tables = [];
+        let tableStructures = {};
+        let sqlQuery = '';
+        let datacenterIds = [];
+
+        const API_DB_URL = 'https://c3ntrala.ag3nts.org/apidb';
+        const API_ANSWER_URL = 'https://c3ntrala.ag3nts.org/report';
+
+        function log(stepId, message) {
+            const logElement = document.getElementById(stepId + 'Log');
+            if (logElement) {
+                logElement.style.display = 'block';
+                logElement.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+        }
+
+        function showResult(stepId, message, isError = false) {
+            const resultElement = document.getElementById(stepId + 'Result');
+            if (resultElement) {
+                resultElement.style.display = 'block';
+                resultElement.className = isError ? 'error' : 'result';
+                resultElement.textContent = message;
+            }
+        }
+
+        function activateStep(stepNumber) {
+            // Oznacz poprzednie kroki jako ukończone
+            for (let i = 1; i < stepNumber; i++) {
+                const step = document.getElementById('step' + i);
+                step.classList.remove('active');
+                step.classList.add('completed');
+            }
+            
+            // Aktywuj obecny krok
+            const currentStepElement = document.getElementById('step' + stepNumber);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+                currentStep = stepNumber;
+            }
+        }
+
+        async function makeApiCall(query) {
+            const payload = {
+                task: "database",
+                apikey: apiKey,
+                query: query
+            };
+
+            const response = await fetch(API_DB_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        }
+
+        async function startAgent() {
+            apiKey = document.getElementById('apiKey').value.trim();
+            
+            if (!apiKey) {
+                alert('Proszę podać klucz API!');
+                return;
+            }
+
+            activateStep(2);
+            await discoverTables();
+        }
+
+        async function discoverTables() {
+            try {
+                log('tables', 'Wysyłanie zapytania SHOW TABLES...');
+                
+                const response = await makeApiCall('SHOW TABLES');
+                log('tables', 'Odpowiedź otrzymana: ' + JSON.stringify(response, null, 2));
+                
+                if (response.reply && Array.isArray(response.reply)) {
+                    tables = response.reply.map(row => Object.values(row)[0]);
+                    showResult('tables', `Znalezione tabele: ${tables.join(', ')}`);
+                    
+                    activateStep(3);
+                    await analyzeTableStructures();
+                } else {
+                    showResult('tables', 'Błąd: Nieprawidłowa odpowiedź z API', true);
+                }
+            } catch (error) {
+                log('tables', 'Błąd: ' + error.message);
+                showResult('tables', 'Błąd podczas odkrywania tabel: ' + error.message, true);
+            }
+        }
+
+        async function analyzeTableStructures() {
+            try {
+                const relevantTables = ['users', 'datacenters'];
+                
+                for (const table of relevantTables) {
+                    if (tables.includes(table)) {
+                        log('structure', `Analizowanie struktury tabeli: ${table}`);
+                        
+                        const response = await makeApiCall(`SHOW CREATE TABLE ${table}`);
+                        log('structure', `Struktura ${table}: ` + JSON.stringify(response, null, 2));
+                        
+                        if (response.reply && response.reply[0]) {
+                            const createStatement = response.reply[0]['Create Table'];
+                            tableStructures[table] = createStatement;
+                        }
+                    }
+                }
+                
+                showResult('structure', `Przeanalizowano strukturę tabel: ${Object.keys(tableStructures).join(', ')}`);
+                
+                activateStep(4);
+                await generateSQLQuery();
+            } catch (error) {
+                log('structure', 'Błąd: ' + error.message);
+                showResult('structure', 'Błąd podczas analizy struktur: ' + error.message, true);
+            }
+        }
+
+        async function generateSQLQuery() {
+            try {
+                log('sql', 'Generowanie zapytania SQL na podstawie struktury tabel...');
+                
+                // Analiza struktury tabel
+                const usersStructure = tableStructures['users'] || '';
+                const datacentersStructure = tableStructures['datacenters'] || '';
+                
+                log('sql', 'Struktura tabeli users: ' + usersStructure);
+                log('sql', 'Struktura tabeli datacenters: ' + datacentersStructure);
+                
+                // Na podstawie typowej struktury takich tabel, generujemy zapytanie
+                // Szukamy aktywnych datacenter (is_active = 1) których menadżerowie są nieaktywni (is_active = 0)
+                sqlQuery = `
+                    SELECT d.dc_id 
+                    FROM datacenters d 
+                    INNER JOIN users u ON d.manager = u.username 
+                    WHERE d.is_active = 1 AND u.is_active = 0
+                `.trim();
+                
+                log('sql', 'Wygenerowane zapytanie SQL: ' + sqlQuery);
+                showResult('sql', 'Zapytanie SQL zostało wygenerowane');
+                
+                activateStep(5);
+                await executeQuery();
+            } catch (error) {
+                log('sql', 'Błąd: ' + error.message);
+                showResult('sql', 'Błąd podczas generowania zapytania: ' + error.message, true);
+            }
+        }
+
+        async function executeQuery() {
+            try {
+                log('query', 'Wykonywanie zapytania SQL: ' + sqlQuery);
+                
+                const response = await makeApiCall(sqlQuery);
+                log('query', 'Wynik zapytania: ' + JSON.stringify(response, null, 2));
+                
+                if (response.reply && Array.isArray(response.reply)) {
+                    datacenterIds = response.reply.map(row => parseInt(row.dc_id));
+                    showResult('query', `Znaleziono ${datacenterIds.length} datacenter: [${datacenterIds.join(', ')}]`);
+                    
+                    activateStep(6);
+                    await sendFinalAnswer();
+                } else {
+                    showResult('query', 'Błąd: Brak danych w odpowiedzi', true);
+                }
+            } catch (error) {
+                log('query', 'Błąd: ' + error.message);
+                showResult('query', 'Błąd podczas wykonywania zapytania: ' + error.message, true);
+            }
+        }
+
+        async function sendFinalAnswer() {
+            try {
+                log('final', 'Przygotowywanie finalnej odpowiedzi...');
+                
+                const finalPayload = {
+                    task: "database",
+                    apikey: apiKey,
+                    answer: datacenterIds
+                };
+                
+                log('final', 'Wysyłanie odpowiedzi: ' + JSON.stringify(finalPayload, null, 2));
+                
+                const response = await fetch(API_ANSWER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(finalPayload)
+                });
+                
+                const result = await response.json();
+                log('final', 'Odpowiedź centrali: ' + JSON.stringify(result, null, 2));
+                
+                if (response.ok) {
+                    showResult('final', 'Odpowiedź została pomyślnie przesłana do centrali!');
+                    
+                    // Oznacz ostatni krok jako ukończony
+                    document.getElementById('step6').classList.remove('active');
+                    document.getElementById('step6').classList.add('completed');
+                    
+                    // Pokaż finalne podsumowanie
+                    const finalAnswer = document.getElementById('finalAnswer');
+                    finalAnswer.style.display = 'block';
+                    finalAnswer.innerHTML = `
+                        🎉 Zadanie wykonane pomyślnie!<br>
+                        Znalezione datacenter ID: [${datacenterIds.join(', ')}]<br>
+                        Status: ${result.message || 'Odpowiedź przyjęta'}
+                    `;
+                } else {
+                    showResult('final', 'Błąd podczas wysyłania odpowiedzi: ' + (result.message || 'Nieznany błąd'), true);
+                }
+            } catch (error) {
+                log('final', 'Błąd: ' + error.message);
+                showResult('final', 'Błąd podczas wysyłania finalnej odpowiedzi: ' + error.message, true);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -288,9 +288,9 @@ async function categorizeFiles(allFiles: TextFromFile[], llmService: OpenAITextP
     const response = await llmService.completion(completionParams);
 
     console.log("Categorization response:");
-    console.log(response.choices[0]?.message?.content);
+    console.log(response);
 
-    const rawJson = response.choices[0]?.message?.content ?? "{}";
+    const rawJson = response ?? "{}";
     // Clean up the JSON string by removing any console formatting or line numbers
     const cleanJson = rawJson
         .replace(/^```json\s*/, '') // Remove leading ```json

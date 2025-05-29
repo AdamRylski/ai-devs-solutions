@@ -6,12 +6,12 @@ export interface LlmTextProcessingService {
    * Process text messages using an LLM model and return a completion
    * @param messages Array of chat messages to process
    * @param model Optional model identifier to use for processing
-   * @returns Promise resolving to a chat completion
+   * @returns Promise resolving to the completion text
    */
   completion(
     messages: ChatCompletionMessageParam[],
     model?: string
-  ): Promise<ChatCompletion>;
+  ): Promise<string>;
 }
 
 export interface AudioProcessingService {
