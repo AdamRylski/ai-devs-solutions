@@ -5,13 +5,15 @@ import { OllamaTextProcessingService } from '../../common/src/ollama/OllamaTextP
 import { ChatCompletionMessageParam } from 'openai/resources.js';
 import { CentralaApi } from '../../common/src/centrala/CentralaApi.js';
 import { json } from 'stream/consumers';
+import { OpenAITextProcessingService } from '../../common/src/openai/OpenAITextProcessingService.js';
+import { LlmTextProcessingService } from '../../common/src/types.js';
 
   const peopleAPI = "https://c3ntrala.ag3nts.org/people"
   const placesAPI = "https://c3ntrala.ag3nts.org/places"
 
 const promptMianownik = `
-Podaj mianownik słowa.
-Jeśli to imie i nazwisko, odpowiedz tylko imieniem w mianowniku (pomiń wszystkie znaki po spacji).
+Podaj mianownik słowa bez polskich znaków.
+Jeśli to imie i nazwisko, odpowiedz tylko imieniem w mianowniku.
 Jeśli to nazwa miasta, odpowiedz tylko nazwą miasta w mianowniku.
 Odpowiedz tylko słowem w mianowniku, niczym więcej. 
 Żadnych dodatkowych znaków.
@@ -19,10 +21,12 @@ Odpowiedz tylko słowem w mianowniku, niczym więcej.
 
 const promptZadanie = `
 Wyodrębnij wszystkie imiona i nazwy miast z tekstu. 
-Odpowiedź zwróć w postaci JSON zawierający dwie listy:
- * names - zawiera wszystkie imiona w tekście
+Odpowiedź zwróć w postaci JSON dwa sety unikalnych imion i miast:
+ * names - zawiera wszystkie imiona w tekście (bez nazwisk)
  * places - zawiera wszystkie nazwy miast w tekście
- Wygeneruj sam JSON, nic więcej.
+Imiona i nazwiska powinny być w mianowniku.
+Jeśli imie lub nazwa miasta zawiera polskie znaki, zamień je na odpowiednie litery bez polskich znaków.
+Wygeneruj sam JSON, nic więcej.
 `;
 
 interface PeopleAndPlaces {
@@ -30,7 +34,7 @@ interface PeopleAndPlaces {
   places: string[];
 }
 
-async function normalizeText(text: string, ollama: OllamaTextProcessingService): Promise<string> {
+async function normalizeText(text: string, ollama: LlmTextProcessingService): Promise<string> {
   const response = await ollama.completion([
     {
       role: "system", 
@@ -50,7 +54,7 @@ const globalEnvPath = path.resolve(process.env.HOME || process.env.USERPROFILE |
 config({ path: globalEnvPath });
 
 
-async function getPeopleAndPlaces(textUrl: string, ollama: OllamaTextProcessingService): Promise<PeopleAndPlaces> {
+async function getPeopleAndPlaces(textUrl: string, ollama: LlmTextProcessingService): Promise<PeopleAndPlaces> {
   const text = (await axios.get(textUrl)).data;
   const peopleAndPlaces = await ollama.completion([
     {
@@ -66,23 +70,26 @@ async function getPeopleAndPlaces(textUrl: string, ollama: OllamaTextProcessingS
   return JSON.parse(peopleAndPlaces) as PeopleAndPlaces;
 }
 
-async function queryApi(url: string, param: string, ollama: OllamaTextProcessingService): Promise<Array<string>> {
-
-  const normalizedParam = await normalizeText(param, ollama);
+async function queryApi(url: string, param: string, ollama: LlmTextProcessingService): Promise<Array<string>> {
   const response = await axios.post(url, {
     apikey: process.env.AI_DEVS_API_KEY,
-    query: normalizedParam
+    query: param
   });
 
   if (response.status !== 200) {
     throw new Error(`Api error: ${response.status} ${response.statusText}`);
   }
 
-  const responseData = response.data as String;
-  return responseData.split(' ');
+  interface ApiResponse {
+    message: string;
+    param: string;
+  }
+
+  console.log(`Response: ${(response.data as ApiResponse).message}`);
+  return (response.data as ApiResponse).message.split(' ');
 }
 
-async function findBarbara(peopleAndPlaces: PeopleAndPlaces, ollama: OllamaTextProcessingService): Promise<string> {
+async function findBarbara(peopleAndPlaces: PeopleAndPlaces, ollama: LlmTextProcessingService): Promise<string> {
   const peopleQueue = new Set(peopleAndPlaces.names);
   const placesQueue = new Set(peopleAndPlaces.places);
   const visitedPeople = new Set<string>();
@@ -103,7 +110,6 @@ async function findBarbara(peopleAndPlaces: PeopleAndPlaces, ollama: OllamaTextP
 
         console.log(`Checking person: ${person}`);
         const response = await queryApi(peopleAPI, person, ollama);
-        console.log(`Response: ${response}`);
         response.forEach(place => {
           if (!visitedPlaces.has(place)) {
             placesQueue.add(place);
@@ -120,9 +126,8 @@ async function findBarbara(peopleAndPlaces: PeopleAndPlaces, ollama: OllamaTextP
       if (!visitedPlaces.has(place)) {
         visitedPlaces.add(place);
 
-        console.log(`Checking person: ${place}`);
+        console.log(`Checking place: ${place}`);
         const response = await queryApi(placesAPI, place, ollama);
-        console.log(`Response: ${response}`);
         response.forEach(person => {
           if (!visitedPeople.has(person)) {
             visitedPeople.add(person);
@@ -152,8 +157,9 @@ async function main() {
     throw new Error('AI_DEVS_API_KEY is not set');
   }
   const ollama = new OllamaTextProcessingService();
+  const gpt = new OpenAITextProcessingService(process.env.OPENAI_API_KEY);
   const centrala = new CentralaApi(process.env.AI_DEVS_API_KEY);
-  const peopleAndPlaces = await getPeopleAndPlaces(textUrl, ollama);
+  const peopleAndPlaces = await getPeopleAndPlaces(textUrl, gpt);
 
   peopleAndPlaces.names = peopleAndPlaces.names.filter(name => name !== "Barbara");
   console.log(peopleAndPlaces);

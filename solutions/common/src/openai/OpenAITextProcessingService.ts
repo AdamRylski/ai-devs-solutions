@@ -15,10 +15,29 @@ export class OpenAITextProcessingService implements LlmTextProcessingService {
         messages,
         model,
       });
-      return chatCompletion.choices[0].message.content || '';
+
+      const msg = chatCompletion.choices[0].message.content || '';
+      return this.cleanResponseContent(msg);
     } catch (error) {
       console.error("Error in OpenAI completion:", error);
       throw error;
     }
+  }
+
+  private cleanResponseContent(content: string): string {
+    // Remove markdown code block markers
+    content = content.replace(/```json\n/g, '');
+    content = content.replace(/```\n/g, '');
+    content = content.replace(/```/g, '');
+    
+    // Remove any leading/trailing backticks
+    content = content.replace(/^`+|`+$/g, '');
+    
+    // Trim any extra whitespace
+    content = content.trim();
+
+    
+    
+    return content;
   }
 } 
