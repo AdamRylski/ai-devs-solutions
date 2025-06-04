@@ -18,7 +18,7 @@
     "cheerio": "^1.0.0-rc.12",
     "natural": "^8.1.0",
     "node-nlp": "^5.0.0-alpha.5",
-    "openai": "^4.28.0",
+    "openai": "^5.0.2",
     "turndown": "^7.1.2"
   },
   "devDependencies": {

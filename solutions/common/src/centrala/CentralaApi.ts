@@ -89,7 +89,7 @@ export class CentralaApi {
             });
     
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error: ${response.status} ${response.body}`);
             }
     
             const responseText = await response.text();
@@ -105,4 +105,5 @@ export class CentralaApi {
             throw error;
         }
     }
+    
 }

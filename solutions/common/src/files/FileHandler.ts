@@ -37,4 +37,18 @@ export class FileHandler {
 
         return fs.readFileSync(filePath, 'utf8');
     }
+
+        /**
+     * Reads text content from a file
+     * @param filePath - The path to the file
+     * @returns The content of the file as a string
+     * @throws Error if the file doesn't exist or can't be read
+     */
+    public static readLines(filePath: string): string[] {
+        if (!fs.existsSync(filePath)) {
+            throw new Error(`File does not exist at path: ${filePath}`);
+        }
+
+        return fs.readFileSync(filePath, 'utf8').split(/\r?\n|\r/);;
+    }
 }
