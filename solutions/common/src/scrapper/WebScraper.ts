@@ -5,20 +5,7 @@ import axios from 'axios';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import TurndownService from 'turndown';
-
-interface ScrapedContent {
-  url: string;
-  markdown: string;
-  images: Array<{
-    url: string;
-    description: string;
-    caption?: string;
-  }>;
-  audioTranscriptions: Array<{
-    url: string;
-    transcription: string;
-  }>;
-}
+import { ScrapedContent } from './index.js';
 
 export class WebScraper {
   private pictureAnalysisService: OpenAIPictureAnalysisService;
@@ -61,49 +48,49 @@ export class WebScraper {
       content.markdown = this.turndownService.turndown(htmlContent);
 
       // Process images
-      // const images = $('img').toArray();
-      // for (const img of images) {
-      //   const imgUrl = $(img).attr('src');
-      //   console.log("imgUrl: ", imgUrl)
-      //   if (imgUrl) {
-      //     try {
-      //       const absoluteUrl = this.resolveUrl(imgUrl);
-      //       const imageResponse = await axios.get(absoluteUrl, { responseType: 'arraybuffer' });
-      //       const base64Image = Buffer.from(imageResponse.data).toString('base64');
+      const images = $('img').toArray();
+      for (const img of images) {
+        const imgUrl = $(img).attr('src');
+        console.log("imgUrl: ", imgUrl)
+        if (imgUrl) {
+          try {
+            const absoluteUrl = this.resolveUrl(imgUrl);
+            const imageResponse = await axios.get<ArrayBuffer>(absoluteUrl, { responseType: 'arraybuffer' });
+            const base64Image = Buffer.from(imageResponse.data).toString('base64');
             
-      //       // Find the associated caption
-      //       let caption: string | undefined;
-      //       const parentFigure = $(img).closest('figure');
-      //       if (parentFigure.length > 0) {
-      //         const figcaption = parentFigure.find('figcaption');
-      //         if (figcaption.length > 0) {
-      //           caption = figcaption.html()?.replace(/<br\s*\/?>/gi, '\n') || undefined;
-      //         }
-      //       } else {
-      //         // Check for adjacent figcaption if img is not in a figure
-      //         const nextFigcaption = $(img).next('figcaption');
-      //         if (nextFigcaption.length > 0) {
-      //           caption = nextFigcaption.html()?.replace(/<br\s*\/?>/gi, '\n') || undefined;
-      //         }
-      //       }
+            // Find the associated caption
+            let caption: string | undefined;
+            const parentFigure = $(img).closest('figure');
+            if (parentFigure.length > 0) {
+              const figcaption = parentFigure.find('figcaption');
+              if (figcaption.length > 0) {
+                caption = figcaption.html()?.replace(/<br\s*\/?>/gi, '\n') || undefined;
+              }
+            } else {
+              // Check for adjacent figcaption if img is not in a figure
+              const nextFigcaption = $(img).next('figcaption');
+              if (nextFigcaption.length > 0) {
+                caption = nextFigcaption.html()?.replace(/<br\s*\/?>/gi, '\n') || undefined;
+              }
+            }
 
-      //       let description: string;
-      //       if (caption == null || caption == undefined || caption == '') {
-      //         description = await this.analyzeImage(base64Image);
-      //       } else {
-      //         description = await this.analyzeImageWithCaption(base64Image, caption);
-      //       }
+            let description: string;
+            if (caption == null || caption == undefined || caption == '') {
+              description = await this.analyzeImage(base64Image);
+            } else {
+              description = await this.analyzeImageWithCaption(base64Image, caption);
+            }
 
-      //       content.images.push({
-      //         url: absoluteUrl,
-      //         description,
-      //         caption: caption ? caption.trim() : undefined
-      //       });
-      //     } catch (error) {
-      //       console.error(`Failed to process image ${imgUrl}:`, error);
-      //     }
-      //   }
-      // }
+            content.images.push({
+              url: absoluteUrl,
+              description,
+              caption: caption ? caption.trim() : undefined
+            });
+          } catch (error) {
+            console.error(`Failed to process image ${imgUrl}:`, error);
+          }
+        }
+      }
 
       // Process audio files
       const audioElements = $('audio source, a[href$=".mp3"], a[href$=".wav"], a[href$=".m4a"]').toArray();
