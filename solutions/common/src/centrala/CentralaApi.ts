@@ -98,9 +98,9 @@ export class CentralaApi {
 
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error('Error sending answer:', error.message);
+                console.error('Error sending answer: ', error.message);
             } else {
-                console.error('Error sending answer:', error);
+                console.error('Error sending answer: ', error);
             }
             throw error;
         }
