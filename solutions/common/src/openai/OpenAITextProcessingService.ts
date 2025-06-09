@@ -19,10 +19,29 @@ export class OpenAITextProcessingService implements LlmTextProcessingService {
       const msg = chatCompletion.choices[0].message.content || '';
       return this.cleanResponseContent(msg);
     } catch (error) {
-      console.error("Error in OpenAI completion:", error);
+      console.error("Error in OpenAI completion:", (error as Error).message);
       throw error;
     }
   }
+
+  async completionJson(messages: ChatCompletionMessageParam[], model: string = "gpt-4o"): Promise<any> {
+    try {
+      const chatCompletion = await this.openai.chat.completions.create({
+        messages,
+        model,
+        ...{
+        response_format: { type: "json_object" }
+        }
+      });
+
+      const msg = chatCompletion.choices[0].message.content || '';
+      return JSON.parse(msg);
+    } catch (error) {
+      console.error("Error in OpenAI completion:", (error as Error).message);
+      throw error;
+    }
+  }
+
 
   private cleanResponseContent(content: string): string {
     // Remove markdown code block markers

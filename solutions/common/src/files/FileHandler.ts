@@ -1,5 +1,12 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readdir, readFile } from 'fs/promises';
+import { join } from 'path';
+
+export interface FileData {
+    fileName: string;
+    content: string;
+  }
 
 export class FileHandler {
     /**
@@ -51,4 +58,34 @@ export class FileHandler {
 
         return fs.readFileSync(filePath, 'utf8').split(/\r?\n|\r/);;
     }
+
+    static async readFilesFromFolder(folderPath: string): Promise<FileData[]> {
+        try {
+          // Read all items in the directory
+          const items = await readdir(folderPath, { withFileTypes: true });
+          
+          // Filter only files (exclude directories)
+          const files = items
+            .filter(item => item.isFile())
+            .map(item => item.name);
+          
+          // Read content of each file
+          const fileDataPromises = files.map(async (fileName): Promise<FileData> => {
+            const filePath = join(folderPath, fileName);
+            const content = await readFile(filePath, 'utf-8');
+            
+            return {
+              fileName,
+              content
+            };
+          });
+          
+          // Wait for all files to be read
+          const fileDataList = await Promise.all(fileDataPromises);
+          
+          return fileDataList;
+        } catch (error) {
+          throw new Error(`Failed to read files from folder: ${error}`);
+        }
+      }
 }

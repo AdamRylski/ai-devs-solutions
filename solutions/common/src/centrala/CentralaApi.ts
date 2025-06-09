@@ -10,6 +10,13 @@ class TaskResponse {
     }
 }
 
+
+
+export interface Question {
+    id: string;
+    question: string;
+}
+
 export class CentralaApi {
     private readonly apiKey: string;
     private readonly baseUrl: string;
@@ -104,6 +111,15 @@ export class CentralaApi {
             }
             throw error;
         }
+    }
+
+    async fetchQuestions(url: string): Promise<Question[]> {
+        const downloadedQuestions = await this.downloadTaskInputWithApiKey(url)
+        const questionsMap = JSON.parse(downloadedQuestions)
+        return Object.entries(questionsMap).map(([key, value]) => ({
+            id: key as string,
+            question: value as string
+          }));
     }
     
 }
